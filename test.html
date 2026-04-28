@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<body>
+    正则: <input id="reg" value="\d+"><br>
+    文本: <input id="txt" value="123abc456">
+    <p id="res"></p>
+    <script>
+        document.oninput = () => {
+            const r = new RegExp(document.getElementById('reg').value);
+            const t = document.getElementById('txt').value;
+            document.getElementById('res').innerText = r.test(t) ? "✅ 匹配成功" : "❌ 不匹配";
+        };
+    </script>
+</body>
+</html>
