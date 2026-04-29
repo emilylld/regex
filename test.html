@@ -1,15 +1,65 @@
 <!DOCTYPE html>
 <html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f4f7f6; }
+        .box { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-family: monospace; }
+        #res { padding: 10px; border-radius: 4px; margin-top: 10px; font-weight: bold; }
+        .match-item { background: #fff3cd; border: 1px solid #ffeeba; padding: 2px 5px; margin: 2px; border-radius: 3px; display: inline-block; font-family: monospace; }
+    </style>
+</head>
 <body>
-    正则: <input id="reg" value="\d+"><br>
-    文本: <input id="txt" value="123abc456">
-    <p id="res"></p>
+    <div class="box">
+        <h3>🔍 正则表达式实时测试</h3>
+        正则 (Regex): <input id="reg" value="\d+" placeholder="例如: \d+">
+        文本 (Text): <input id="txt" value="123abc456" placeholder="输入待测试的文本">
+        
+        <div id="status"></div>
+        <div id="res" style="margin-top: 15px;"></div>
+    </div>
+
     <script>
-        document.oninput = () => {
-            const r = new RegExp(document.getElementById('reg').value);
-            const t = document.getElementById('txt').value;
-            document.getElementById('res').innerText = r.test(t) ? "✅ 匹配成功" : "❌ 不匹配";
+        const regInput = document.getElementById('reg');
+        const txtInput = document.getElementById('txt');
+        const resDiv = document.getElementById('res');
+        const statusDiv = document.getElementById('status');
+
+        const testRegex = () => {
+            const regStr = regInput.value;
+            const text = txtInput.value;
+            
+            if(!regStr) {
+                statusDiv.innerText = "请输入正则表达式";
+                resDiv.innerHTML = "";
+                return;
+            }
+
+            try {
+                // 使用 'g' 修饰符进行全局匹配
+                const r = new RegExp(regStr, 'g');
+                const matches = text.match(r);
+
+                if (matches) {
+                    statusDiv.innerHTML = "✅ 匹配成功";
+                    statusDiv.style.color = "#2ea44f";
+                    resDiv.innerHTML = "匹配到的内容: <br>" + 
+                        matches.map(m => `<span class="match-item">${m}</span>`).join(' ');
+                } else {
+                    statusDiv.innerHTML = "❌ 不匹配";
+                    statusDiv.style.color = "#d73a49";
+                    resDiv.innerHTML = "";
+                }
+            } catch (e) {
+                statusDiv.innerHTML = "⚠️ 正则语法错误";
+                statusDiv.style.color = "#f66a0a";
+            }
         };
+
+        regInput.oninput = testRegex;
+        txtInput.oninput = testRegex;
+        testRegex(); // 初始化执行一次
     </script>
 </body>
 </html>
